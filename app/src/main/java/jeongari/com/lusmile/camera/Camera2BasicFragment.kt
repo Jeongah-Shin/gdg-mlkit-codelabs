@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit
 class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val lock = Any()
-    private var runClassifier = false
+    private var runDetector = false
     private var checkedPermissions = false
     private var textureView: AutoFitTextureView? = null
     private var layoutFrame: AutoFitFrameLayout? = null
@@ -500,7 +500,7 @@ class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         backgroundThread!!.start()
         backgroundHandler = Handler(backgroundThread!!.looper)
         synchronized(lock) {
-            runClassifier = true
+//            runDetector = true
         }
         backgroundHandler!!.post(periodicClassify)
     }
@@ -515,7 +515,7 @@ class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             backgroundThread = null
             backgroundHandler = null
             synchronized(lock) {
-                runClassifier = false
+//                runDetector = false
             }
         } catch (e: InterruptedException) {
             Log.e(TAG, "Interrupted when stopping background thread", e)
