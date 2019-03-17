@@ -14,6 +14,9 @@
             android:roundIcon="@drawable/app_icon"
             android:supportsRtl="true"
             android:theme="@style/MaterialTheme">
+        <meta-data
+                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+                android:value="face" />
         <activity android:name=".CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
