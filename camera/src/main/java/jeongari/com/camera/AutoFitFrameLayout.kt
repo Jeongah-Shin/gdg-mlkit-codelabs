@@ -1,11 +1,10 @@
 /*
- * Copyright 2017 The Android Open Source Project
- *
+ * Copyright 2018 Zihua Zeng (edvard_hua@live.com), Lang Feng (tearjeaker@hotmail.com)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,29 +13,37 @@
  * limitations under the License.
  */
 
-package jeongari.com.lusmile.camera
+package jeongari.com.camera
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.TextureView
 import android.view.View
+import android.widget.FrameLayout
 
-/** A [TextureView] that can be adjusted to a specified aspect ratio.  */
-class AutoFitTextureView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = 0
-) : TextureView(context, attrs, defStyle) {
+class AutoFitFrameLayout : FrameLayout {
 
   private var mRatioWidth = 0
   private var mRatioHeight = 0
+
+  constructor(context: Context) : super(context)
+
+  constructor(
+    context: Context,
+    attrs: AttributeSet?
+  ) : super(context, attrs)
+
+  constructor(
+    context: Context,
+    attrs: AttributeSet?,
+    defStyleAttr: Int
+  ) : super(context, attrs, defStyleAttr)
 
   /**
    * Sets the aspect ratio for this view. The size of the view will be measured based on the ratio
    * calculated from the parameters. Note that the actual sizes of parameters don't matter, that is,
    * calling setAspectRatio(2, 3) and setAspectRatio(4, 6) make the same result.
    *
-   * @param width Relative horizontal size
+   * @param width  Relative horizontal size
    * @param height Relative vertical size
    */
   fun setAspectRatio(
@@ -44,7 +51,7 @@ class AutoFitTextureView @JvmOverloads constructor(
     height: Int
   ) {
     if (width < 0 || height < 0) {
-      throw IllegalArgumentException("Size cannot be negative.")
+      throw IllegalArgumentException("Size cannot be negative.") as Throwable
     }
     mRatioWidth = width
     mRatioHeight = height

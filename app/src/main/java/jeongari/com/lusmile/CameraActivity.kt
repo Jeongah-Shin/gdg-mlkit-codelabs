@@ -1,8 +1,8 @@
 package jeongari.com.lusmile
 
 import android.support.v7.app.AppCompatActivity
+import jeongari.com.lusmile.CameraFragment
 import android.os.Bundle
-import jeongari.com.lusmile.camera.Camera2BasicFragment
 
 class CameraActivity : AppCompatActivity() {
 
@@ -12,7 +12,7 @@ class CameraActivity : AppCompatActivity() {
         if (null == savedInstanceState) {
             fragmentManager
                 .beginTransaction()
-                .replace(R.id.container, Camera2BasicFragment.newInstance())
+                .replace(R.id.container, CameraFragment.newInstance())
                 .commit()
         }
     }

@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto">
-    <jeongari.com.lusmile.camera.AutoFitFrameLayout
+    <jeongari.com.camera.AutoFitFrameLayout
             android:id="@+id/layoutFrame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -12,12 +12,12 @@
             app:layout_constraintBottom_toTopOf="@id/bottomLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-        <jeongari.com.lusmile.camera.AutoFitTextureView
+        <jeongari.com.camera.AutoFitTextureView
                 android:id="@+id/textureView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         <!-- Should draw custom views for representing inferenced results    -->
-    </jeongari.com.lusmile.camera.AutoFitFrameLayout>
+    </jeongari.com.camera.AutoFitFrameLayout>
     <android.support.constraint.ConstraintLayout
             android:id="@+id/bottomLayout"
             android:layout_width="match_parent"

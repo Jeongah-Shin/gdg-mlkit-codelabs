@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jeongari.com.lusmile.camera
+package jeongari.com.camera
 
 import android.annotation.SuppressLint
 import android.app.*
@@ -23,7 +23,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
 import android.hardware.camera2.*
-import android.hardware.camera2.params.Face
 import android.media.ImageReader
 import android.os.Bundle
 import android.os.Handler
@@ -37,11 +36,10 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import jeongari.com.lusmile.R
 import java.io.IOException
 import java.util.ArrayList
 import java.util.Arrays
@@ -53,7 +51,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Basic fragments for the Camera.
  */
-class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
+open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val lock = Any()
     private var runDetector = false
@@ -240,17 +238,11 @@ class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         }
     }
 
-    /**
-     * Layout the preview and buttons.
-     */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    protected fun inflateFragment(resId:Int, inflater:LayoutInflater, container:ViewGroup):View {
         startBackgroundThread()
-        return inflater.inflate(R.layout.fragment_camera2_basic, container, false)
-
+        val view = inflater.inflate(R.layout.fragment_camera2_basic, container, false)
+        setHasOptionsMenu(true)
+        return view
     }
 
     /**

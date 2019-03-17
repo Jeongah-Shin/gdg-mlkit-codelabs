@@ -1,8 +1,5 @@
 <resources>
-    <string name="app_name">Let\'s smile!</string>
+    <string name="app_name">camera</string>
     <string name="request_permission">카메라 액세스 권한이 필요합니다.</string>
     <string name="camera_error">이 기기는 Camera2 API를 지원하지 않습니다.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
