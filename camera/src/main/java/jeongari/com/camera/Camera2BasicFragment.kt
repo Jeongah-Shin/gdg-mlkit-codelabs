@@ -54,14 +54,16 @@ import java.util.concurrent.TimeUnit
 open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val lock = Any()
-    private var runDetector = false
     private var checkedPermissions = false
-    private var textureView: AutoFitTextureView? = null
-    private var layoutFrame: AutoFitFrameLayout? = null
-    private var tvState : TextView? = null
-    private var ivState : ImageView? = null
 
-    private var isFacingFront: Boolean = true
+    protected var textureView: AutoFitTextureView? = null
+    protected var layoutFrame: AutoFitFrameLayout? = null
+    protected var tvState : TextView? = null
+    protected var ivState : ImageView? = null
+
+    protected var runDetector = false
+
+    protected var isFacingFront: Boolean = true
 
     /**
      * [TextureView.SurfaceTextureListener] handles several lifecycle events on a [ ].
@@ -94,22 +96,22 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
     /**
      * ID of the current [CameraDevice].
      */
-    private var cameraId: String? = null
+    protected var cameraId: String? = null
 
     /**
      * A [CameraCaptureSession] for camera preview.
      */
-    private var captureSession: CameraCaptureSession? = null
+    protected var captureSession: CameraCaptureSession? = null
 
     /**
      * A reference to the opened [CameraDevice].
      */
-    private var cameraDevice: CameraDevice? = null
+    protected var cameraDevice: CameraDevice? = null
 
     /**
      * The [android.util.Size] of camera preview.
      */
-    private var previewSize: Size? = null
+    protected var previewSize: Size? = null
 
     /**
      * [CameraDevice.StateCallback] is called when [CameraDevice] changes its state.
