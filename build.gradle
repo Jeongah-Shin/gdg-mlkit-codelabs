@@ -7,6 +7,7 @@ buildscript {
         firebase_ml_vision_face_model_version = "17.0.2"
         firebase_core_version = "16.0.1"
         google_services_version = "4.0.1"
+        lottie_version = "2.3.0"
     }
     repositories {
         google()
