@@ -69,8 +69,6 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
 
 
     protected var runDetector = false
-    protected var frameByteArray: ByteArray? = null
-
     protected var isFacingFront: Boolean = true
 
     /**
@@ -253,7 +251,6 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
     }
 
     protected fun inflateFragment(resId: Int, inflater: LayoutInflater, container: ViewGroup): View {
-        startBackgroundThread()
         val view = inflater.inflate(R.layout.fragment_camera2_basic, container, false)
         setHasOptionsMenu(true)
         return view
@@ -326,17 +323,17 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
                     Arrays.asList(*map.getOutputSizes(ImageFormat.JPEG)), CompareSizesByArea()
                 )
 
-//                val onImageAvailableListener = object : ImageReader.OnImageAvailableListener {
-//                    override fun onImageAvailable(reader: ImageReader) {
-//                        runDetector = true
-//                    }
-//                }
+                val onImageAvailableListener = object : ImageReader.OnImageAvailableListener {
+                    override fun onImageAvailable(reader: ImageReader) {
+                        reader.acquireLatestImage()
+                    }
+                }
 
                 imageReader = ImageReader.newInstance(
                     480, 360, ImageFormat.YUV_420_888, /*maxImages*/ 2)
-//                    .apply {
-//                    setOnImageAvailableListener(onImageAvailableListener, null)
-//                }
+                    .apply {
+                    setOnImageAvailableListener(onImageAvailableListener, null)
+                }
 
                 // Find out if we need to swap dimension to get the preview size relative to sensor
                 // coordinate.
@@ -490,7 +487,7 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
     /**
      * Starts a background thread and its [Handler].
      */
-    private fun startBackgroundThread() {
+    protected fun startBackgroundThread() {
         backgroundThread = HandlerThread(HANDLE_THREAD_NAME)
         backgroundThread!!.start()
         backgroundHandler = Handler(backgroundThread!!.looper)
@@ -503,7 +500,7 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
     /**
      * Stops the background thread and its [Handler].
      */
-    private fun stopBackgroundThread() {
+    protected fun stopBackgroundThread() {
         backgroundThread!!.quitSafely()
         try {
             backgroundThread!!.join()
@@ -530,17 +527,15 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
 
             // This is the output Surface we need to start preview.
             val surface = Surface(texture)
-            val irSurfce = imageReader!!.surface
 
             // We set up a CaptureRequest.Builder with the output Surface.
             previewRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
                 this.addTarget(surface)
-                this.addTarget(irSurfce)
             }
 
             // Here, we create a CameraCaptureSession for camera preview.
             cameraDevice!!.createCaptureSession(
-                Arrays.asList(surface, irSurfce),
+                Arrays.asList(surface),
                 object : CameraCaptureSession.StateCallback() {
 
                     override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
