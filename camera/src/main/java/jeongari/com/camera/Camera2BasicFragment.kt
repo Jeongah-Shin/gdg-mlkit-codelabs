@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
 import android.hardware.camera2.*
+import android.media.Image
 import android.media.ImageReader
 import android.os.Bundle
 import android.os.Handler
@@ -40,9 +41,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Arrays
+import java.util.Arrays.copyOf
 import java.util.Collections
 import java.util.Comparator
 import java.util.concurrent.Semaphore
@@ -51,17 +57,19 @@ import java.util.concurrent.TimeUnit
 /**
  * Basic fragments for the Camera.
  */
-open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
+abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val lock = Any()
     private var checkedPermissions = false
 
     protected var textureView: AutoFitTextureView? = null
     protected var layoutFrame: AutoFitFrameLayout? = null
-    protected var tvState : TextView? = null
-    protected var ivState : ImageView? = null
+    protected var tvState: TextView? = null
+    protected var ivState: ImageView? = null
+
 
     protected var runDetector = false
+    protected var frameByteArray: ByteArray? = null
 
     protected var isFacingFront: Boolean = true
 
@@ -156,7 +164,7 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
     /**
      * An [ImageReader] that handles image capture.
      */
-    private var imageReader: ImageReader? = null
+    protected var imageReader: ImageReader? = null
 
     /**
      * [CaptureRequest.Builder] for the camera preview
@@ -222,57 +230,42 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
     private val periodicClassify = object : Runnable {
         override fun run() {
             synchronized(lock) {
-                // inference
+                if (runDetector) {
+                    detectFace()
+                }
             }
             backgroundHandler!!.post(this)
         }
     }
+
+    abstract fun detectFace()
 
     /**
      * Shows a [Toast] on the UI thread for the classification results.
      *
      * @param text The message to show
      */
-    private fun showTextview(text: String) {
+    protected fun showTextview(text: String) {
         val activity = activity
         activity?.runOnUiThread {
             tvState?.text = text
         }
     }
 
-    protected fun inflateFragment(resId:Int, inflater:LayoutInflater, container:ViewGroup):View {
+    protected fun inflateFragment(resId: Int, inflater: LayoutInflater, container: ViewGroup): View {
         startBackgroundThread()
         val view = inflater.inflate(R.layout.fragment_camera2_basic, container, false)
         setHasOptionsMenu(true)
         return view
     }
 
-    /**
-     * Connect the buttons to their event handler.
-     */
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
         textureView = view.findViewById(R.id.textureView)
         layoutFrame = view.findViewById(R.id.layoutFrame)
         tvState = view.findViewById(R.id.tvState)
         ivState = view.findViewById(R.id.ivState)
-
-    }
-
-
-    /**
-     * Load the model and labels.
-     */
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        try {
-
-        } catch (e: IOException) {
-            Log.e(TAG, "Failed to initialize an image classifier.", e)
-        }
     }
 
     override fun onResume() {
@@ -297,7 +290,6 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
 
     override fun onDestroy() {
         super.onDestroy()
-        // Closing image classifier
     }
 
     /**
@@ -333,9 +325,18 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
                 val largest = Collections.max(
                     Arrays.asList(*map.getOutputSizes(ImageFormat.JPEG)), CompareSizesByArea()
                 )
+
+//                val onImageAvailableListener = object : ImageReader.OnImageAvailableListener {
+//                    override fun onImageAvailable(reader: ImageReader) {
+//                        runDetector = true
+//                    }
+//                }
+
                 imageReader = ImageReader.newInstance(
-                    largest.width, largest.height, ImageFormat.JPEG, /*maxImages*/ 2
-                )
+                    480, 360, ImageFormat.YUV_420_888, /*maxImages*/ 2)
+//                    .apply {
+//                    setOnImageAvailableListener(onImageAvailableListener, null)
+//                }
 
                 // Find out if we need to swap dimension to get the preview size relative to sensor
                 // coordinate.
@@ -346,10 +347,10 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
                 var swappedDimensions = false
                 when (displayRotation) {
                     Surface.ROTATION_0, Surface.ROTATION_180 -> if (sensorOrientation == 90 || sensorOrientation == 270) {
-                        swappedDimensions = true
+                        //swappedDimensions = true
                     }
                     Surface.ROTATION_90, Surface.ROTATION_270 -> if (sensorOrientation == 0 || sensorOrientation == 180) {
-                        swappedDimensions = true
+                        //swappedDimensions = true
                     }
                     else -> Log.e(TAG, "Display rotation is invalid: $displayRotation")
                 }
@@ -385,7 +386,7 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
                     largest
                 )
 
-                Log.d(TAG, "previewSize.width : " + previewSize!!.width + "previewSize.width : " + previewSize!!.height)
+                Log.d(TAG, "previewSize.width : " + previewSize!!.width + " previewSize.width : " + previewSize!!.height)
 
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
                 val orientation = resources.configuration.orientation
@@ -494,7 +495,7 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
         backgroundThread!!.start()
         backgroundHandler = Handler(backgroundThread!!.looper)
         synchronized(lock) {
-//            runDetector = true
+            runDetector = true
         }
         backgroundHandler!!.post(periodicClassify)
     }
@@ -509,7 +510,7 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
             backgroundThread = null
             backgroundHandler = null
             synchronized(lock) {
-//                runDetector = false
+                runDetector = false
             }
         } catch (e: InterruptedException) {
             Log.e(TAG, "Interrupted when stopping background thread", e)
@@ -529,14 +530,17 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
 
             // This is the output Surface we need to start preview.
             val surface = Surface(texture)
+            val irSurfce = imageReader!!.surface
 
             // We set up a CaptureRequest.Builder with the output Surface.
-            previewRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-            previewRequestBuilder!!.addTarget(surface)
+            previewRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
+                this.addTarget(surface)
+                this.addTarget(irSurfce)
+            }
 
             // Here, we create a CameraCaptureSession for camera preview.
             cameraDevice!!.createCaptureSession(
-                Arrays.asList(surface),
+                Arrays.asList(surface, irSurfce),
                 object : CameraCaptureSession.StateCallback() {
 
                     override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
@@ -746,8 +750,5 @@ open class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermission
             }
         }
 
-        fun newInstance(): Camera2BasicFragment {
-            return Camera2BasicFragment()
-        }
     }
 }
