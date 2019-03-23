@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.hardware.camera2.*
 import android.media.Image
 import android.media.ImageReader
@@ -66,6 +67,7 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
     protected var layoutFrame: AutoFitFrameLayout? = null
     protected var tvState: TextView? = null
     protected var ivState: ImageView? = null
+    protected var drawView : DrawView? = null
 
 
     protected var runDetector = false
@@ -250,9 +252,15 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
         }
     }
 
+    protected fun showImageview(drawable : Drawable) {
+        val activity = activity
+        activity?.runOnUiThread {
+            ivState?.setImageDrawable(drawable)
+        }
+    }
+
     protected fun inflateFragment(resId: Int, inflater: LayoutInflater, container: ViewGroup): View {
         val view = inflater.inflate(R.layout.fragment_camera2_basic, container, false)
-        setHasOptionsMenu(true)
         return view
     }
 
@@ -263,6 +271,7 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
         layoutFrame = view.findViewById(R.id.layoutFrame)
         tvState = view.findViewById(R.id.tvState)
         ivState = view.findViewById(R.id.ivState)
+        drawView = view.findViewById(R.id.drawView)
     }
 
     override fun onResume() {
@@ -383,18 +392,16 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
                     largest
                 )
 
-                Log.d(TAG, "previewSize.width : " + previewSize!!.width + " previewSize.width : " + previewSize!!.height)
-
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
                 val orientation = resources.configuration.orientation
                 if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     layoutFrame!!.setAspectRatio(previewSize!!.width, previewSize!!.height)
                     textureView!!.setAspectRatio(previewSize!!.width, previewSize!!.height)
-                    // Set drawview's aspect ratio
+                    drawView!!.setAspectRatio(previewSize!!.width, previewSize!!.height)
                 } else {
                     layoutFrame!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
                     textureView!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
-                    // Set drawview's aspect ratio
+                    drawView!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
                 }
                 this.cameraId = cameraId
                 return
