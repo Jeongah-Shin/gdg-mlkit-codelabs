@@ -61,7 +61,7 @@ class CameraFragment : Camera2BasicFragment() {
     override fun detectFace() {
         val bitmap = textureView?.getBitmap(textureView!!.width, textureView!!.height)
         if (bitmap != null) {
-            byteArray = getYV12(textureView!!.width, textureView!!.height, bitmap)
+            byteArray = getYV12ByteArray(textureView!!.width, textureView!!.height, bitmap)
             bitmap.recycle()
 
             activity?.runOnUiThread {
@@ -95,6 +95,18 @@ class CameraFragment : Camera2BasicFragment() {
                 )
             drawView?.invalidate()
         }
+    }
+
+    private fun getYV12ByteArray(inputWidth: Int, inputHeight: Int, bitmap: Bitmap): ByteArray {
+        val start_time = System.currentTimeMillis()
+        val argb = IntArray(inputWidth * inputHeight)
+        bitmap.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight)
+        val yuv = ByteArray(inputWidth * inputHeight * 3 / 2)
+        encodeYV12(yuv, argb, inputWidth, inputHeight)
+        bitmap.recycle()
+        val end_time = System.currentTimeMillis()
+        Log.d("RGBA to YV12", (end_time - start_time).toString() + " ms")
+        return yuv
     }
 
     private fun showLottieAnimation(faces: List<FirebaseVisionFace>) {
@@ -133,19 +145,6 @@ class CameraFragment : Camera2BasicFragment() {
         }
     }
 
-
-    private fun getYV12(inputWidth: Int, inputHeight: Int, scaled: Bitmap): ByteArray {
-        val start_time = System.currentTimeMillis()
-        val argb = IntArray(inputWidth * inputHeight)
-        scaled.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight)
-        val yuv = ByteArray(inputWidth * inputHeight * 3 / 2)
-        encodeYV12(yuv, argb, inputWidth, inputHeight)
-        scaled.recycle()
-        val end_time = System.currentTimeMillis()
-        Log.d("RGBA to YV12", (end_time - start_time).toString() + " ms")
-        return yuv
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         BaseApplication.getRefWatcher(activity).watch(this)
@@ -153,7 +152,7 @@ class CameraFragment : Camera2BasicFragment() {
 
     companion object {
 
-        val TAG = CameraFragment::class.qualifiedName
+        val TAG = "CameraFragment"
 
         fun newInstance(): CameraFragment {
             return CameraFragment()
