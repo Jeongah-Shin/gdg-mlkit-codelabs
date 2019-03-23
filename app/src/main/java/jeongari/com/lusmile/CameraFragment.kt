@@ -89,8 +89,10 @@ class CameraFragment : Camera2BasicFragment() {
                     object : OnFailureListener {
                         override fun onFailure(e: Exception) {
                             showTextview("Task for detecting Face image failed.")
+                            Log.e(TAG, e.toString())
                         }
-                    })
+                    }
+                )
             drawView?.invalidate()
         }
     }
@@ -150,6 +152,8 @@ class CameraFragment : Camera2BasicFragment() {
     }
 
     companion object {
+
+        val TAG = CameraFragment::class.qualifiedName
 
         fun newInstance(): CameraFragment {
             return CameraFragment()
