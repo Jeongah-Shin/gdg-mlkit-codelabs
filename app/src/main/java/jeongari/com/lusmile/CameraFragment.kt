@@ -64,9 +64,9 @@ class CameraFragment : Camera2BasicFragment() {
             byteArray = getYV12ByteArray(textureView!!.width, textureView!!.height, bitmap)
             bitmap.recycle()
 
-            activity?.runOnUiThread {
-                drawView?.setImgSize(textureView!!.width, textureView!!.height)
-            }
+//            activity?.runOnUiThread {
+//                drawView?.setImgSize(textureView!!.width, textureView!!.height)
+//            }
 
             val image = FirebaseVisionImage.fromByteArray(byteArray!!, metadata)
 
@@ -93,7 +93,7 @@ class CameraFragment : Camera2BasicFragment() {
                         }
                     }
                 )
-            drawView?.invalidate()
+//            drawView?.invalidate()
         }
     }
 
@@ -114,7 +114,7 @@ class CameraFragment : Camera2BasicFragment() {
             val bounds = face.boundingBox
             val boundWidth = (bounds.right - bounds.left)
 
-            drawView!!.setDrawPoint(RectF(bounds), 1f)
+//            drawView!!.setDrawPoint(RectF(bounds), 1f)
             if (face.smilingProbability != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
                 val smileProb = face.smilingProbability
                 if (smileProb > 0.7f) {
