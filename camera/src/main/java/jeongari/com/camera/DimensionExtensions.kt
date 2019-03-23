@@ -17,7 +17,6 @@ fun Context.sp(value: Float): Int = (value * resources.displayMetrics.scaledDens
 
 //the same for the views
 inline fun View.dip(value: Int): Int = context.dip(value)
-
 inline fun View.dip(value: Float): Int = context.dip(value)
 inline fun View.sp(value: Int): Int = context.sp(value)
 inline fun View.sp(value: Float): Int = context.sp(value)

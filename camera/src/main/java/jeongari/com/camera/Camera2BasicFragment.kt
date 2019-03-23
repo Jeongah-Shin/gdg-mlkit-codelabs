@@ -24,7 +24,6 @@ import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.hardware.camera2.*
-import android.media.Image
 import android.media.ImageReader
 import android.os.Bundle
 import android.os.Handler
@@ -38,25 +37,18 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Arrays
-import java.util.Arrays.copyOf
 import java.util.Collections
 import java.util.Comparator
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
 /**
- * Basic fragments for the Camera.
+ * Basic fragment structure for displaying realtime camera preview using Camera2 API
  */
 abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -64,14 +56,14 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
     private var checkedPermissions = false
 
     protected var textureView: AutoFitTextureView? = null
-    protected var layoutFrame: AutoFitFrameLayout? = null
-    protected var tvState: TextView? = null
-    protected var ivState: ImageView? = null
+    private var layoutFrame: AutoFitFrameLayout? = null
+    private var tvState: TextView? = null
+    private var ivState: ImageView? = null
     protected var drawView : DrawView? = null
 
 
     protected var runDetector = false
-    protected var isFacingFront: Boolean = true
+    private var isFacingFront: Boolean = true
 
     /**
      * [TextureView.SurfaceTextureListener] handles several lifecycle events on a [ ].
@@ -276,10 +268,6 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
 
     override fun onResume() {
         super.onResume()
-        // When the screen is turned off and turned back on, the SurfaceTexture is already
-        // available, and "onSurfaceTextureAvailable" will not be called. In that case, we can open
-        // a camera and start preview from here (otherwise, we wait until the surface is ready in
-        // the SurfaceTextureListener).
         if (textureView!!.isAvailable) {
             openCamera(textureView!!.width, textureView!!.height)
         } else {
@@ -501,7 +489,7 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
         synchronized(lock) {
             runDetector = true
         }
-        backgroundHandler!!.post(periodicClassify)
+        backgroundHandler!!.postDelayed(periodicClassify, 300)
     }
 
     /**

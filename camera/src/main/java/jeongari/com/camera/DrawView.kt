@@ -2,6 +2,7 @@ package jeongari.com.camera
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
@@ -90,7 +91,7 @@ class DrawView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if(rectF != null){
-            mPaint.color = 0xff6fa8dc.toInt()
+            mPaint.color = Color.parseColor("#86AF49")
             canvas.drawRect(rectF,mPaint)
         }
     }
