@@ -40,5 +40,11 @@ dependencies {
 
     //lottie
     implementation "com.airbnb.android:lottie:$lottie_version"
+
+    //LeakCanary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
+    //For support library fragments
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakcanary_version"
 }
 apply plugin: 'com.google.gms.google-services'

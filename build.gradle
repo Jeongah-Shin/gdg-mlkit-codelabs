@@ -8,6 +8,7 @@ buildscript {
         firebase_core_version = "16.0.1"
         google_services_version = "4.0.1"
         lottie_version = "2.3.0"
+        leakcanary_version = "1.6.3"
     }
     repositories {
         google()
