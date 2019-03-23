@@ -1,6 +1,7 @@
 package jeongari.com.lusmile;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class ImageUtils {
     public static byte [] getNV21(int inputWidth, int inputHeight, Bitmap scaled) {
@@ -48,7 +49,7 @@ public class ImageUtils {
     }
 
     public static byte [] getYV12(int inputWidth, int inputHeight, Bitmap scaled) {
-
+        Long start_time = System.currentTimeMillis();
         int [] argb = new int[inputWidth * inputHeight];
 
         scaled.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight);
@@ -57,7 +58,8 @@ public class ImageUtils {
         encodeYV12(yuv, argb, inputWidth, inputHeight);
 
         scaled.recycle();
-
+        Long end_time = System.currentTimeMillis();
+        Log.d("RGBA to YV12", (end_time-start_time)+"ms");
         return yuv;
     }
 
@@ -96,4 +98,5 @@ public class ImageUtils {
             }
         }
     }
+
 }

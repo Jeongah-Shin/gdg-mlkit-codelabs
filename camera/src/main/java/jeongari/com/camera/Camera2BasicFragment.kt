@@ -234,7 +234,7 @@ abstract class Camera2BasicFragment : Fragment(), ActivityCompat.OnRequestPermis
                     detectFace()
                 }
             }
-            backgroundHandler!!.post(this)
+            backgroundHandler!!.postDelayed(this, 300)
         }
     }
 
