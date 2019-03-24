@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
+import com.google.firebase.ml.vision.face.FirebaseVisionFace
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import jeongari.com.camera.Camera2BasicFragment
@@ -53,7 +54,40 @@ class CameraFragment : Camera2BasicFragment() {
 
             val image = FirebaseVisionImage.fromByteArray(byteArray!!, metadata)
 
+            detector.detectInImage(image)
+                .addOnCompleteListener {
+                }
+                .addOnSuccessListener { faces ->
+                    if (faces.isEmpty())
+                        showTextview("No Face deteced")
+                    else
+                        showBoundingBox(faces)
+                }
+                .addOnCanceledListener {
+                    showTextview("Task for detecting Face image canceled.")
+                }
+                .addOnFailureListener(
+                    object : OnFailureListener {
+                        override fun onFailure(e: Exception) {
+                            showTextview("Task for detecting Face image failed.")
+                            Log.e(TAG, e.toString())
+                        }
+                    }
+                )
+
         }
+    }
+
+    private fun showBoundingBox(faces: List<FirebaseVisionFace>) {
+        activity?.runOnUiThread {
+            drawView?.setImgSize(textureView!!.width, textureView!!.height)
+        }
+        for (face in faces) {
+            val bounds = face.boundingBox
+            drawView!!.setDrawPoint(RectF(bounds), 1f)
+            showTextview(bounds.toShortString())
+        }
+        drawView?.invalidate()
     }
 
     private fun getYV12ByteArray(inputWidth: Int, inputHeight: Int, bitmap: Bitmap): ByteArray {
