@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="camera_height_bottom_layout">100dp</dimen>
+    <dimen name="camera_width_iv_state">70dp</dimen>
+    <dimen name="camera_height_iv_state">70dp</dimen>
+    <dimen name="camera_size_tv_state">10sp</dimen>
+    <dimen name="camera_margin_start_state_tv_iv">35dp</dimen>
+</resources>
