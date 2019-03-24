@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <jeongari.com.camera.AutoFitFrameLayout
+            android:id="@+id/layoutFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        <jeongari.com.camera.AutoFitTextureView
+                android:id="@+id/textureView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        <jeongari.com.camera.DrawView
+                android:id="@+id/drawView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ltViewHappy"
+                app:lottie_fileName="animation_w450_h450_happy.json"
+                android:layout_width="450dp"
+                android:layout_height="450dp"
+                app:lottie_autoPlay="false"/>
+    </jeongari.com.camera.AutoFitFrameLayout>
+    <android.support.constraint.ConstraintLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/camera_height_bottom_layout"
+            app:layout_constraintTop_toBottomOf="@+id/layoutFrame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@android:color/white">
+        <LinearLayout
+                android:id="@+id/layoutState"
+                android:orientation="vertical"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <ImageView
+                    android:id="@+id/ivState"
+                    android:src="@drawable/ic_calm"
+                    android:scaleType="centerInside"
+                    android:layout_width="@dimen/camera_width_iv_state"
+                    android:layout_height="@dimen/camera_height_iv_state"/>
+            <TextView
+                    android:id="@+id/tvState"
+                    android:text="@string/app_name"
+                    android:textAlignment = "center"
+                    android:layout_marginTop = "10dp"
+                    android:textSize="@dimen/camera_size_tv_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>
