@@ -51,6 +51,8 @@ class CameraFragment : Camera2BasicFragment() {
             byteArray = getYV12ByteArray(textureView!!.width, textureView!!.height, bitmap)
             bitmap.recycle()
 
+            val image = FirebaseVisionImage.fromByteArray(byteArray!!, metadata)
+
         }
     }
 
