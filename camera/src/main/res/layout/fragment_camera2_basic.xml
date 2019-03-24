@@ -21,12 +21,6 @@
                 android:id="@+id/drawView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-        <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/ltViewHappy"
-                app:lottie_fileName="animation_w450_h450_happy.json"
-                android:layout_width="450dp"
-                android:layout_height="450dp"
-                app:lottie_autoPlay="false"/>
     </jeongari.com.camera.AutoFitFrameLayout>
     <android.support.constraint.ConstraintLayout
             android:id="@+id/bottomLayout"
