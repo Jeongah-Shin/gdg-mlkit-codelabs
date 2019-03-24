@@ -11,10 +11,7 @@ Let’s Smile 은 카메라 프리뷰 위에 사용자 얼굴을 인식하여 �
 [Google Play Store 다운로드](https://play.google.com/store/apps/details?id=jeongari.com.lusmile)
 
 <img src='./img/gdg_seoul_logo.jpeg'>
-
-<img src='./img/mot_slogan.png'>
-
-
+<img src='./img/mot_slogan.png' width="70%" height="70%"> 
 
 ### 브랜치 순서
 
