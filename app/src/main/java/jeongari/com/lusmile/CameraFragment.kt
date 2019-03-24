@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -20,6 +21,8 @@ import jeongari.com.camera.Camera2BasicFragment
 class CameraFragment : Camera2BasicFragment() {
 
     private var byteArray: ByteArray? = null
+
+    private var ltViewHappy: LottieAnimationView? = null
 
     private val metadata: FirebaseVisionImageMetadata by lazy {
         FirebaseVisionImageMetadata.Builder()
@@ -44,6 +47,13 @@ class CameraFragment : Camera2BasicFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle?): View? {
         val view = inflateFragment(R.id.layoutFrame, inflater, container)
         return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        ltViewHappy = view.findViewById(R.id.ltViewHappy)
+        ltViewHappy?.visibility = View.INVISIBLE
+        ltViewHappy?.speed = 5.0f
     }
 
     override fun detectFace() {
