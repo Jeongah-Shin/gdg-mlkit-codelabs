@@ -24,8 +24,22 @@ class CameraFragment : Camera2BasicFragment() {
     override fun detectFace() {
         val bitmap = textureView?.getBitmap(textureView!!.width, textureView!!.height)
         if (bitmap != null) {
+            byteArray = getYV12ByteArray(textureView!!.width, textureView!!.height, bitmap)
+            bitmap.recycle()
 
         }
+    }
+
+    private fun getYV12ByteArray(inputWidth: Int, inputHeight: Int, bitmap: Bitmap): ByteArray {
+        val start_time = System.currentTimeMillis()
+        val argb = IntArray(inputWidth * inputHeight)
+        bitmap.getPixels(argb, 0, inputWidth, 0, 0, inputWidth, inputHeight)
+        val yuv = ByteArray(inputWidth * inputHeight * 3 / 2)
+        encodeYV12(yuv, argb, inputWidth, inputHeight)
+        bitmap.recycle()
+        val end_time = System.currentTimeMillis()
+        Log.d("RGBA to YV12", (end_time - start_time).toString() + " ms")
+        return yuv
     }
 
     companion object {
