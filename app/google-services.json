@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "45930469171",
+    "firebase_url": "https://let-us-smile.firebaseio.com",
+    "project_id": "let-us-smile",
+    "storage_bucket": "let-us-smile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45930469171:android:d1437a34607feeea",
+        "android_client_info": {
+          "package_name": "jeongari.com.lusmile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45930469171-oj01udouo1qrljm5nrb4jv7r22ose6cc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqEZaD3H0VtLCdZdB1SAplTPtRh5dyXf4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
