@@ -7,3 +7,12 @@
 <img src='./img/gdg_seoul_logo.jpeg'>
 
 <img src='./img/mot_slogan.png'>
+
+
+
+### 브랜치 순서
+
+- feature/settings
+- feature/preprocessing
+- feature/mlkit
+- feature/lottie
