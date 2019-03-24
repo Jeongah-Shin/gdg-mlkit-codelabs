@@ -74,7 +74,7 @@ class CameraFragment : Camera2BasicFragment() {
                         showTextview("No Face deteced")
                     }
                     else{
-                        showBoundingBox(faces)
+//                        showBoundingBox(faces)
                         showLottieAnimation(faces)
                     }
                 }
