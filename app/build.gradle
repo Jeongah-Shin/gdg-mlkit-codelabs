@@ -32,4 +32,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':camera')
+
+    //firebase
+    implementation "com.google.firebase:firebase-ml-vision:$firebase_ml_vision_version"
+    implementation "com.google.firebase:firebase-ml-vision-face-model:$firebase_ml_vision_face_model_version"
+    implementation "com.google.firebase:firebase-core:$firebase_core_version"
+
+    //lottie
+    implementation "com.airbnb.android:lottie:$lottie_version"
 }
+apply plugin: 'com.google.gms.google-services'
