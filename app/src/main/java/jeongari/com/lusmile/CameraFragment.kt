@@ -9,12 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import jeongari.com.camera.Camera2BasicFragment
 
 
 class CameraFragment : Camera2BasicFragment() {
 
     private var byteArray: ByteArray? = null
+
+    private val metadata: FirebaseVisionImageMetadata by lazy {
+        FirebaseVisionImageMetadata.Builder()
+            .setWidth(textureView!!.width) // 480x360 is typically sufficient for
+            .setHeight(textureView!!.height) // image recognition
+            .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_YV12)
+            .setRotation(0)
+            .build()
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle?): View? {
         val view = inflateFragment(R.id.layoutFrame, inflater, container)
