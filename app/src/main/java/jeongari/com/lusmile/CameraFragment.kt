@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import jeongari.com.camera.Camera2BasicFragment
 
 
@@ -25,6 +26,12 @@ class CameraFragment : Camera2BasicFragment() {
             .setRotation(0)
             .build()
 
+    }
+    private val realTimeOpts: FirebaseVisionFaceDetectorOptions by lazy {
+        FirebaseVisionFaceDetectorOptions.Builder()
+            .setPerformanceMode(FirebaseVisionFaceDetectorOptions.FAST)
+            .setClassificationMode(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
+            .build()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle?): View? {
