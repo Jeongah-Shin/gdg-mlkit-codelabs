@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
@@ -20,6 +21,8 @@ import jeongari.com.camera.Camera2BasicFragment
 class CameraFragment : Camera2BasicFragment() {
 
     private var byteArray: ByteArray? = null
+  
+    private var ltViewHappy: LottieAnimationView? = null
 
     private val metadata: FirebaseVisionImageMetadata by lazy {
         FirebaseVisionImageMetadata.Builder()
@@ -46,6 +49,15 @@ class CameraFragment : Camera2BasicFragment() {
         return view
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        ltViewHappy = view.findViewById(R.id.ltViewHappy)
+        ltViewHappy?.apply {
+            this.visibility = View.INVISIBLE
+            this.speed = 5.0f
+        }
+    }
+
     override fun detectFace() {
         val bitmap = textureView?.getBitmap(textureView!!.width, textureView!!.height)
         if (bitmap != null) {
@@ -58,10 +70,18 @@ class CameraFragment : Camera2BasicFragment() {
                 .addOnCompleteListener {
                 }
                 .addOnSuccessListener { faces ->
+
                     if (faces.isEmpty())
                         showTextview("No Face deteced")
                     else
                         showBoundingBox(faces)
+                    if (faces.isEmpty()){
+                        showTextview("No Face deteced")
+                    }
+                    else{
+//                        showBoundingBox(faces)
+                        showLottieAnimation(faces)
+                    }
                 }
                 .addOnCanceledListener {
                     showTextview("Task for detecting Face image canceled.")
@@ -75,6 +95,39 @@ class CameraFragment : Camera2BasicFragment() {
                     }
                 )
 
+        }
+    }
+    private fun showLottieAnimation(faces: List<FirebaseVisionFace>) {
+        for (face in faces) {
+            val bounds = face.boundingBox
+            val boundWidth = (bounds.right - bounds.left)
+            if (face.smilingProbability != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
+                val smileProb = face.smilingProbability
+                if (smileProb > 0.7f) {
+                    activity?.runOnUiThread {
+                        ltViewHappy?.visibility = View.VISIBLE
+                        ltViewHappy?.layoutParams?.width = boundWidth
+                        ltViewHappy?.layoutParams?.height = boundWidth
+                        ltViewHappy?.x = bounds.left.toFloat()
+                        ltViewHappy?.y = bounds.top.toFloat() - boundWidth
+
+                        ltViewHappy?.requestLayout()
+                    }
+                    if (ltViewHappy?.isAnimating != true)
+                        ltViewHappy?.playAnimation()
+                    showImageview(resources.getDrawable(R.drawable.ic_calm))
+
+                } else {
+                    activity?.runOnUiThread {
+                        ltViewHappy?.visibility = View.INVISIBLE
+                    }
+                    if (ltViewHappy!!.isAnimating) {
+                        ltViewHappy?.cancelAnimation()
+                    }
+                    showImageview(resources.getDrawable(R.drawable.ic_sad))
+                }
+                showTextview("Smiling Probability Estimation : " + (smileProb * 100) + " %")
+            }
         }
     }
 
