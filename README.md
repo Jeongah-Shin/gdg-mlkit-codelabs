@@ -12,7 +12,7 @@ Let’s Smile 은 카메라 프리뷰 위에 사용자 얼굴을 인식하여 �
 
 <img src='./img/gdg_seoul_logo.jpeg'>
 
-<img src='./img/mot_slogan.png'>
+<img src='./img/mot_slogan.png' width="70%" height="70%"> 
 
 
 
