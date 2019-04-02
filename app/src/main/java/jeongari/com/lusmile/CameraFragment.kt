@@ -21,7 +21,7 @@ import jeongari.com.camera.Camera2BasicFragment
 class CameraFragment : Camera2BasicFragment() {
 
     private var byteArray: ByteArray? = null
-
+  
     private var ltViewHappy: LottieAnimationView? = null
 
     private val metadata: FirebaseVisionImageMetadata by lazy {
@@ -70,6 +70,11 @@ class CameraFragment : Camera2BasicFragment() {
                 .addOnCompleteListener {
                 }
                 .addOnSuccessListener { faces ->
+
+                    if (faces.isEmpty())
+                        showTextview("No Face deteced")
+                    else
+                        showBoundingBox(faces)
                     if (faces.isEmpty()){
                         showTextview("No Face deteced")
                     }
