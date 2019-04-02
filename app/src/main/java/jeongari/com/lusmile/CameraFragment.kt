@@ -8,13 +8,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.tasks.OnFailureListener
+import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
+import com.google.firebase.ml.vision.face.FirebaseVisionFace
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import jeongari.com.camera.Camera2BasicFragment
 
 
 class CameraFragment : Camera2BasicFragment() {
 
     private var byteArray: ByteArray? = null
+
+    private val metadata: FirebaseVisionImageMetadata by lazy {
+        FirebaseVisionImageMetadata.Builder()
+            .setWidth(textureView!!.width) // 480x360 is typically sufficient for
+            .setHeight(textureView!!.height) // image recognition
+            .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_YV12)
+            .setRotation(0)
+            .build()
+
+    }
+    private val realTimeOpts: FirebaseVisionFaceDetectorOptions by lazy {
+        FirebaseVisionFaceDetectorOptions.Builder()
+            .setPerformanceMode(FirebaseVisionFaceDetectorOptions.FAST)
+            .setClassificationMode(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
+            .build()
+    }
+    private val detector: FirebaseVisionFaceDetector by lazy {
+        FirebaseVision.getInstance()
+            .getVisionFaceDetector(realTimeOpts)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle?): View? {
         val view = inflateFragment(R.id.layoutFrame, inflater, container)
@@ -27,7 +52,42 @@ class CameraFragment : Camera2BasicFragment() {
             byteArray = getYV12ByteArray(textureView!!.width, textureView!!.height, bitmap)
             bitmap.recycle()
 
+            val image = FirebaseVisionImage.fromByteArray(byteArray!!, metadata)
+
+            detector.detectInImage(image)
+                .addOnCompleteListener {
+                }
+                .addOnSuccessListener { faces ->
+                    if (faces.isEmpty())
+                        showTextview("No Face deteced")
+                    else
+                        showBoundingBox(faces)
+                }
+                .addOnCanceledListener {
+                    showTextview("Task for detecting Face image canceled.")
+                }
+                .addOnFailureListener(
+                    object : OnFailureListener {
+                        override fun onFailure(e: Exception) {
+                            showTextview("Task for detecting Face image failed.")
+                            Log.e(TAG, e.toString())
+                        }
+                    }
+                )
+
         }
+    }
+
+    private fun showBoundingBox(faces: List<FirebaseVisionFace>) {
+        activity?.runOnUiThread {
+            drawView?.setImgSize(textureView!!.width, textureView!!.height)
+        }
+        for (face in faces) {
+            val bounds = face.boundingBox
+            drawView!!.setDrawPoint(RectF(bounds), 1f)
+            showTextview(bounds.toShortString())
+        }
+        drawView?.invalidate()
     }
 
     private fun getYV12ByteArray(inputWidth: Int, inputHeight: Int, bitmap: Bitmap): ByteArray {
